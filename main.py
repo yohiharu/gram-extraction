@@ -3,7 +3,6 @@ from pathlib import Path
 
 import numpy as np
 import torch
-import torch.nn as nn
 from PIL import Image
 from torchvision import models, transforms
 
@@ -72,13 +71,25 @@ def save_gram_matrices(gram_matrices, output_dir, image_path):
 
 def main():
     # ここからparser
-    parser = argparse.ArgumentParser(description="Extract Gram matrices from an image using pretrained VGG19.")
+    parser = argparse.ArgumentParser(
+        description="Extract Gram matrices from an image using pretrained VGG19."
+    )
     parser.add_argument("image", help="Path to input image file")
-    parser.add_argument("-o", "--output-dir", default="gram_output", help="Directory to write .txt output files (default: ./gram_output)")
-    parser.add_argument("--device", choices=["cpu", "cuda", "mps"], default=None, help="Compute device (default: auto-select cuda > mps > cpu)")
+    parser.add_argument(
+        "-o",
+        "--output-dir",
+        default="gram_output",
+        help="Directory to write .txt output files (default: ./gram_output)",
+    )
+    parser.add_argument(
+        "--device",
+        choices=["cpu", "cuda", "mps"],
+        default=None,
+        help="Compute device (default: auto-select cuda > mps > cpu)",
+    )
     args = parser.parse_args()
-    
-    #device
+
+    # device
     if args.device:
         device = torch.device(args.device)
     elif torch.cuda.is_available():
@@ -89,7 +100,7 @@ def main():
         device = torch.device("cpu")
     print(f"Using device: {device}")
 
-    #画像のロード
+    # 画像のロード
     image = load_image(args.image).to(device)
 
     weights = models.VGG19_Weights.IMAGENET1K_V1
